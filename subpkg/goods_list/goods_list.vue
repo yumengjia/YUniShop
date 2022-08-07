@@ -1,7 +1,7 @@
 <template>
   <view>
-    goods_list
-  </view>
+     goods-list
+    </view>
 </template>
 
 <script>
