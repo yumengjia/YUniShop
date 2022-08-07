@@ -1,5 +1,6 @@
 <template>
     <view>
+      <my-search :bgcolor="'#c00000'" :radius="18" @myclick='goSearch'></my-search>
       <view class="scroll-view-container">
         <!-- 左侧的滚动视图区域 -->
         <scroll-view class="left-scroll-view" scroll-y :style="{height: state.wh + 'px'}">
@@ -40,7 +41,7 @@
       
       const getCateList = async() => {
         const result = await uni.$http.get('/api/public/v1/categories')
-        console.log(result);
+        // console.log(result);
         if(result.data.meta.status !==200){
           return uni.$showMsg()
         }
@@ -62,13 +63,19 @@
         })
       }
       
+      const goSearch = () => {
+        uni.navigateTo({
+          url:'/subpkg/search/search'
+        })
+      }
+      
       onMounted(() => {
         const sysInfo = uni.getSystemInfoSync()
-        state.wh = sysInfo.windowHeight
+        state.wh = sysInfo.windowHeight - 50
         getCateList()
       })
       
-      return { state, changeActive, goGoodsList }
+      return { state, changeActive, goGoodsList, goSearch }
     }
   }
 </script>
