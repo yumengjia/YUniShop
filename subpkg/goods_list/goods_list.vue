@@ -2,7 +2,7 @@
   <view>
     <view class="goods-list">
       <view v-for="(goods,i) in state.goodsList" :key="i" @click="goDetail(goods)">
-       <my-goods :goods='goods'></my-goods>
+       <my-goods :goods='goods' :showRadio="false"></my-goods>
       </view>
     </view>
   </view>

@@ -24,18 +24,23 @@ uni.$showMsg = function(title='数据请求失败！',duration=1500){
 
 // #ifndef VUE3
 import Vue from 'vue'
+import store from './store/store.js'
 Vue.config.productionTip = false
 App.mpType = 'app'
 const app = new Vue({
-    ...App
+    ...App,
+    store
 })
 app.$mount()
+
 // #endif
 
 // #ifdef VUE3
+import store from './store/store.js'
 import { createSSRApp } from 'vue'
 export function createApp() {
   const app = createSSRApp(App)
+  app.use(store)
   return {
     app
   }

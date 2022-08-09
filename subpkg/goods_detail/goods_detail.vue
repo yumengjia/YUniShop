@@ -1,5 +1,5 @@
 <template>
-  <view  v-if="state.goods_info.goods_name" class="goods-detail">
+  <view v-if="state.goods_info.goods_name" class="goods-detail">
     <!-- 轮播图区域-->
     <swiper :indicator-dots="true" :autoplay="true" :interval="3000" :duration="1000" :circular="true">
       <swiper-item v-for="(item,i) in state.goods_info.pics" :key="i">
@@ -30,16 +30,20 @@
     
     <!-- 底部导航区域-->
     <view class="goods-carts">
-      <uni-goods-nav :options="options" :fill="true" :button-group="buttonGroup" @click="onClick" @buttonClick="buttonClick" />
+      <uni-goods-nav :options="state.options" :fill="true" :button-group="state.buttonGroup" @click="onClick" @buttonClick="buttonClick" />
     </view>
   </view>
+  
 </template>
 
 <script>
-  import { reactive, onMounted } from 'vue'
+  import { reactive, onMounted, computed, watch } from 'vue'
+  import { useStore } from 'vuex'
   export default {
     props:['goods_id'],
     setup(props) {
+      const store = useStore()
+      const {getters} = useStore()
       const state = reactive({
         goods_info:{},
         options: [{
@@ -48,7 +52,7 @@
           }, {
             icon: 'cart',
             text: '购物车',
-            info: 2
+            info: 0
         }],
         buttonGroup: [{
             text: '加入购物车',
@@ -65,7 +69,7 @@
       
       const getGoodsDetail = async(goods_id) => {
         const result = await uni.$http.get('/api/public/v1/goods/detail',{goods_id})
-        console.log(result);
+        // console.log(result);
         if(result.data.meta.status !==200){
           return uni.$showMsg()
         }
@@ -84,7 +88,7 @@
       }
       
       const onClick = (e) => {
-        console.log(e);
+        // console.log(e);
         if(e.content.text === '购物车'){
           uni.switchTab({
             url:'/pages/cart/cart'
@@ -94,7 +98,31 @@
       
         
       const buttonClick = (e) => {
+        // console.log(e);
+          if(e.content.text === '加入购物车'){
+            // console.log('11');
+            // 2. 组织一个商品的信息对象
+            const goods = {
+               goods_id: state.goods_info.goods_id,       // 商品的Id
+               goods_name: state.goods_info.goods_name,   // 商品的名称
+               goods_price: state.goods_info.goods_price, // 商品的价格
+               goods_count: 1,                           // 商品的数量
+               goods_small_logo: state.goods_info.goods_small_logo, // 商品的图片
+               goods_state: true                         // 商品的勾选状态
+            }
+            store.commit('cart/ADDTOCART',goods)
+          }
       }
+      
+      const total = computed(() => {
+        return getters['cart/total']
+      })
+      watch(total, function(newValue){
+        const findResult = state.options.find(x => x.text === '购物车')
+        if(findResult){
+          findResult.info = newValue
+        }
+      },{immediate:true}) 
       
       
       onMounted(() => {
@@ -156,12 +184,12 @@ swiper {
 .goods-detail{
   padding-bottom: 50px;
   .goods-carts{
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-  }
+     position: fixed;
+     left: 0;
+     bottom: 0;
+     width: 100%;
+   }
 }
-
+ 
 
 </style>

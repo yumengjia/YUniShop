@@ -44,13 +44,24 @@
 
 <script>
   import { reactive, onMounted} from 'vue'
+  import { useStore } from 'vuex'
   export default {
     setup() {
+      const store = useStore()
+      const { getters } = useStore() 
       const state = reactive({
         swiperList:[],
         categoryList:[],
         floorList:[]
       });
+      
+      const setBadge = () => {
+        uni.setTabBarBadge({
+          index:2,
+          //text的值只能是字符串，不能是数字
+          text:getters['cart/total'] + ''  //加空字符串的目的是将text的值转化为字符串
+        })
+      } 
     
       const getSwiperList = async() => {
         const result = await uni.$http.get('/api/public/v1/home/swiperdata')
@@ -100,6 +111,7 @@
         getSwiperList()
         getCategoryList()
         getFloorList()
+        setBadge()
       })
       
       return { state, navClickHandler, goSearch }
