@@ -49,6 +49,9 @@ import { reactive, onMounted, computed, watch } from 'vue'
       })
       
       const setBadge = () => {
+        console.log('11111');
+        console.log(getters['cart/total'] + '');
+        console.log('111111');
         uni.setTabBarBadge({
           index:2,
           //text的值只能是字符串，不能是数字

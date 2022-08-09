@@ -43,7 +43,7 @@
 </template>
 
 <script>
-  import { reactive, onMounted} from 'vue'
+  import { reactive, onMounted, computed, watch} from 'vue'
   import { useStore } from 'vuex'
   export default {
     setup() {
@@ -56,10 +56,12 @@
       });
       
       const setBadge = () => {
+        let num = getters['cart/total'] + ''
+        console.log(num, typeof num);
         uni.setTabBarBadge({
           index:2,
-          //text的值只能是字符串，不能是数字
-          text:getters['cart/total'] + ''  //加空字符串的目的是将text的值转化为字符串
+          //text的值只能是字符串，不能是数字 getters['cart/total'] + ''
+          text: num //加空字符串的目的是将text的值转化为字符串
         })
       } 
     

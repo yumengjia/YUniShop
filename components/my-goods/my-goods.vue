@@ -61,6 +61,7 @@
           goods_count:val
         })
       }
+
       
       return {state, radioClickHandler, numChangeHandler}
     }
